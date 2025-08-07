@@ -24,7 +24,7 @@ pipeline {
                     if (TARGET_ENV == 'dev') {
                         echo 'Running DEV setup...'
                         // Add dev-specific setup commands here
-                        //sh 'echo "Dev environment setup complete"'
+                        sh "echo 'Dev environment setup complete'"
                     } else if (TARGET_ENV == 'qa') {
                         echo 'Running QA setup...'
                         // Add QA-specific setup commands here
@@ -39,7 +39,7 @@ pipeline {
                 echo "Running build and tests for ${TARGET_ENV}"
                 // Example: run tests with environment-specific config
                 //sh "pytest --env=${TARGET_ENV}"
-                //sh 'Build & Test"'
+                //sh  'Build & Test"'
             }
         }
     }
