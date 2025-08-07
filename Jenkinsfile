@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/im2g2s/DevopsAcademy.git', branch: 'test'
+                git url: 'https://github.com/im2g2s/DevopsAcademy.git', branch: 'main'
             }
         }
 
