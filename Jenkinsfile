@@ -1,104 +1,50 @@
 pipeline {
     agent any
-
-    parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa'], description: 'Choose the environment')
+triggers {
+        // Poll GitHub every 1 minute for changes
+        pollSCM('* * * * *')
     }
-
-    environment {
-        TARGET_ENV = "${params.ENVIRONMENT}"
-    }
-
-    stages {
+stages {
         stage('Checkout') {
             steps {
-                echo "📥 Checking out code from GitHub..."
-                git url: 'https://github.com/im2g2s/DevopsAcademy.git', branch: 'test'
-            }
-        }
-
-        stage('Setup') {
-            steps {
-                echo "⚙️ Setting up for environment: ${TARGET_ENV}"
-                script {
-                    if (TARGET_ENV == 'dev') {
-                        bat "echo DEV environment setup complete"
-                    } else if (TARGET_ENV == 'qa') {
-                        bat "echo QA environment setup complete"
-                    }
-                }
-            }
-        }
-
-        stage('Approval') {
-            steps {
-                script {
-                    def userInput = input(
-                        id: 'Approval', message: "Proceed with build and test for '${TARGET_ENV}'?",
-                        parameters: [
-                            booleanParam(defaultValue: true, description: 'Approve build execution', name: 'Approved')
-                        ]
-                    )
-                    if (!userInput) {
-                        error("Build not approved. Pipeline aborted.")
-                    }
-                }
+                git branch: 'slave1', url: 'https://github.com/im2g2s/DevopsAcademy.git'
             }
         }
 
         stage('Build') {
             steps {
-                echo "🏗️ Building project for ${TARGET_ENV}"
-                script {
-                    if (TARGET_ENV == 'dev') {
-                        bat "echo Building DEV artifacts"
-                    } else if (TARGET_ENV == 'qa') {
-                        bat "echo Building QA artifacts"
-                    }
-                }
+                echo 'Building the application...'
+                // Example build command
+                //sh 'npm install'
             }
         }
 
         stage('Test') {
             steps {
-                echo "🧪 Running tests for ${TARGET_ENV}"
-                script {
-                    if (TARGET_ENV == 'dev') {
-                        bat "echo Running DEV tests"
-                    } else if (TARGET_ENV == 'qa') {
-                        bat "echo Running QA tests"
-                    }
-                }
-            }
-        }
+                echo 'Running tests...'
+                // Example test command
 
-        stage('Deploy') {
+		}
+	}
+stage('Deploy') {
             steps {
-                echo "🚀 Deploying to ${TARGET_ENV} environment"
-                script {
-                    if (TARGET_ENV == 'dev') {
-                        bat "echo Deploying to DEV"
-                    } else if (TARGET_ENV == 'qa') {
-                        bat "echo Deploying to QA"
-                    }
-                }
-            }
-        }
-
-        stage('Report') {
-            steps {
-                echo "📊 Generating reports for ${TARGET_ENV}"
-                bat "echo Report generation complete"
+                echo 'Deploying to $DEPLOY_PATH ...'
+                // Sample deployment (replace with your actual command)
+               // sh """
+                //mkdir -p $DEPLOY_PATH
+                //cp -r * $DEPLOY_PATH/
+                echo 'Deployed at: ' $(date)
+                //"""
             }
         }
     }
 
     post {
         success {
-            echo "✅ Pipeline completed successfully for ${TARGET_ENV}"
+            echo '✅ Build and Deployment successful.'
         }
-        failure {
-            echo "❌ Pipeline failed for ${TARGET_ENV}"
+failure {
+            echo '❌ Build or Deployment failed.'
         }
     }
 }
